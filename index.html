@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox with Animated SVG Markers</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+  // Your Mapbox access token
+  mapboxgl.accessToken = 'pk.eyJ1Ijoid2lsbGNhcnRlciIsImEiOiJjaWdjdHdkNzYwZGp3dTVtMGhhY2ZkaDloIn0.9qTtVfFnKXVe82B-6mJbqQ';
+
+  // Initialize the map
+  const map = new mapboxgl.Map({
+    container: 'map',  // container ID
+    style: 'mapbox://styles/mapbox/streets-v11',  // style URL
+    center: [-104.9903, 39.7392],  // starting position [lng, lat] (Denver, CO)
+    zoom: 10  // starting zoom
+  });
+
+  // Animated SVG code
+  const animatedSVG = `
+        <svg width="50" height="50" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" fill="none" r="10" stroke="#FF0000" stroke-width="2">
+                <animate attributeName="r" from="8" to="20" dur=".5s" begin="0s" repeatCount="20"/>
+                <animate attributeName="opacity" from="1" to="0" dur=".5s" begin="0s" repeatCount="20"/>
+            </circle>
+            <circle cx="20" cy="20" fill="#FF0000" r="10"/>
+        </svg>
+    `;
+
+  // Function to create an animated SVG marker
+  function createAnimatedMarker(lng, lat) {
+    const el = document.createElement('div');
+    el.innerHTML = animatedSVG;
+    el.style.width = '50px';  // Adjust marker size
+    el.style.height = '50px'; // Adjust marker size
+
+    // Add the marker to the map
+    new mapboxgl.Marker(el)
+      .setLngLat([lng, lat])
+      .addTo(map);
+  }
+
+  // Add three markers around Denver, CO
+  createAnimatedMarker(-104.9903, 39.7392);  // Marker 1: Denver center
+  createAnimatedMarker(-105.1019, 39.7294);  // Marker 2: West of Denver
+  createAnimatedMarker(-104.8719, 39.7494);  // Marker 3: East of Denver
+</script>
+
+</body>
+</html>
