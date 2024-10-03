@@ -129,7 +129,7 @@
     map.addControl(new mapboxgl.NavigationControl());
 
     const minDotSize = 30;
-    const maxDotSize = 500;
+    const maxDotSize = 400;
     const dotOpacity = .7;
     const dotVisibilityDurationSecs = 1.5;
     const dayCycleDelayMillis = 1500;
@@ -202,7 +202,7 @@
         infoBox.innerHTML = `
         <h2>Attacks since ${formattedFirstDate}</h2>
         <h2>${formattedCurrentDate} - ${attacksTodayText}</h2>
-        <p>Running total: <strong>${runningTotal}</strong> attacks.</p>
+        <p>Running total: <strong>${runningTotal}</strong> attacks</p>
         <p>Strongest attack: ${formatDate(maxAttacksDay.date)} (<strong>${maxAttacksDay.numberOfAttacks}</strong> attacks)</p>
         <hr/>
         ${legendHTML}
@@ -280,6 +280,17 @@
                 attacksForDay.forEach(attack => {
                     addAttackPoint(attack.longitude, attack.latitude, attack.count, attack.aws_region, minAttacks, maxAttacks);
                 });
+
+                // If this is the last day, restart the loop
+                if (index === distinctDays.length - 1) {
+                    setTimeout(() => {
+                        // Reset variables for the next loop
+                        runningTotal = 0;
+                        maxAttacksDay = { date: '', numberOfAttacks: 0 };
+                        fetchAttacks(); // Restart the loop
+                    }, dayCycleDelayMillis);
+                }
+
             }, index * dayCycleDelayMillis);
         });
     }
